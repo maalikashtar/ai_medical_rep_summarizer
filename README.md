@@ -2,7 +2,7 @@
 
 An AI-powered medical report summarization platform that enables users to upload medical documents and receive concise, easy-to-understand summaries while preserving critical clinical information.
 
-Built with **FastAPI**, **React**, **SQLite**, and **Anthropic Claude AI**.
+Built with **FastAPI**, **React**, **SQLite*.
 
 ---
 
