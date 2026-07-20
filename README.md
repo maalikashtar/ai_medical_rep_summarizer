@@ -1,121 +1,250 @@
-# MedReport Summarizer
+# 🩺 MedReport Summarizer
 
-An AI-powered web application that lets users upload medical reports (PDF, DOCX, TXT),
-automatically extracts the text, and generates a clear, easy-to-understand AI summary
-while preserving important medical information.
+An AI-powered medical report summarization platform that enables users to upload medical documents and receive concise, easy-to-understand summaries while preserving critical clinical information.
 
-## Tech Stack
+Built with **FastAPI**, **React**, **SQLite**, and **Anthropic Claude AI**.
 
-| Layer          | Technology                                      |
-|----------------|--------------------------------------------------|
-| Backend        | FastAPI (Python)                                  |
-| Frontend       | React + Vite + Tailwind CSS                       |
-| Database       | SQLite (via SQLAlchemy)                           |
-| Auth           | JWT stored in secure HTTP-only cookies            |
-| Password hash  | Argon2 (`argon2-cffi`)                            |
-| AI provider    | Anthropic Claude (`anthropic` Python SDK)         |
-| Package manager (backend) | [`uv`](https://docs.astral.sh/uv/)     |
+---
 
-## Project Structure
+## 📌 Overview
 
-```
+MedReport Summarizer streamlines the process of understanding medical reports by automatically extracting text from uploaded documents and generating AI-powered summaries. The application provides secure authentication, document management, and an intuitive user experience.
+
+---
+
+## ✨ Features
+
+- 🔐 Secure user authentication using JWT stored in HTTP-only cookies
+- 👤 User registration and login
+- 📄 Upload medical reports (PDF, DOCX, TXT)
+- 📑 Automatic text extraction from uploaded documents
+- 🤖 AI-generated medical report summaries using Anthropic Claude
+- 📚 View previously uploaded reports
+- 🔍 Search and filter reports
+- 🗑️ Delete uploaded reports
+- 📋 Copy generated summaries
+- 📱 Fully responsive user interface
+- ⚡ RESTful API architecture
+
+---
+
+# 🛠️ Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Backend | FastAPI |
+| Frontend | React + Vite |
+| Styling | Tailwind CSS |
+| Database | SQLite + SQLAlchemy |
+| Authentication | JWT + HTTP-only Cookies |
+| Password Hashing | Argon2 |
+| AI Integration | Anthropic Claude API |
+| Package Manager | uv |
+| HTTP Client | Axios |
+
+---
+
+# 📁 Project Structure
+
+```text
 medreport-summarizer/
-├── backend/                  # FastAPI application
+│
+├── backend/
 │   ├── app/
-│   │   ├── core/             # config, security (JWT + Argon2), auth dependency
-│   │   ├── models/           # SQLAlchemy models
-│   │   ├── routers/          # auth & reports API routes
-│   │   ├── services/         # file storage, text extraction, AI summarization
+│   │   ├── core/
+│   │   ├── models/
+│   │   ├── routers/
+│   │   ├── services/
+│   │   ├── schemas/
 │   │   ├── database.py
-│   │   ├── schemas.py        # Pydantic request/response models
-│   │   └── main.py           # FastAPI app entrypoint
-│   ├── uploads/               # uploaded files stored here (gitignored)
-│   ├── pyproject.toml         # dependencies (managed with uv)
+│   │   └── main.py
+│   │
+│   ├── uploads/
+│   ├── pyproject.toml
 │   └── .env.example
-└── frontend/                  # React + Vite application
+│
+└── frontend/
     ├── src/
-    │   ├── api/               # axios API clients
-    │   ├── components/        # FileUpload, ReportList, Navbar, Toast, ProtectedRoute
-    │   ├── context/           # AuthContext
-    │   ├── pages/              # Login, Register, Dashboard, ReportDetail
+    │   ├── api/
+    │   ├── components/
+    │   ├── context/
+    │   ├── pages/
     │   ├── App.jsx
     │   └── main.jsx
+    │
     ├── package.json
     └── .env.example
 ```
 
-## Getting Started
+---
 
-### 1. Backend setup (FastAPI + uv)
+# 🚀 Installation
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/medreport-summarizer.git
+
+cd medreport-summarizer
+```
+
+---
+
+## 2. Backend Setup
 
 ```bash
 cd backend
+
 uv venv .venv
-source .venv/bin/activate        # on Windows: .venv\Scripts\activate
+
+# Windows
+.venv\Scripts\activate
+
+# Linux/macOS
+source .venv/bin/activate
+
 uv pip install -e .
-
-cp .env.example .env
-# Edit .env and set:
-#   SECRET_KEY=<generate a long random string>
-#   ANTHROPIC_API_KEY=<your Anthropic API key>
-
-uvicorn app.main:app --reload --port 8000
 ```
 
-The API will be available at `http://localhost:8000`, with interactive docs at
-`http://localhost:8000/docs`.
+Create a `.env` file.
 
-> Alternatively, once you have a `uv.lock`, you can simply run `uv sync` then
-> `uv run uvicorn app.main:app --reload`.
+Example:
 
-### 2. Frontend setup (React + Vite)
+```env
+SECRET_KEY=your_secret_key
+
+DATABASE_URL=sqlite:///./medreport.db
+
+ANTHROPIC_API_KEY=your_api_key
+
+AI_MODEL=claude-3-sonnet
+
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
+
+Run the backend
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Backend URL
+
+```
+http://localhost:8000
+```
+
+Swagger Documentation
+
+```
+http://localhost:8000/docs
+```
+
+---
+
+## 3. Frontend Setup
 
 ```bash
 cd frontend
-cp .env.example .env   # optional — dev server proxies /api to localhost:8000 by default
+
 npm install
+
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`.
+Frontend URL
 
-## Environment Variables (backend/.env)
+```
+http://localhost:5173
+```
 
-| Variable                     | Description                                             |
-|-------------------------------|-----------------------------------------------------------|
-| `SECRET_KEY`                  | Secret used to sign JWTs — set a long random value        |
-| `ALGORITHM`                   | JWT signing algorithm (default `HS256`)                   |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token/cookie lifetime in minutes                           |
-| `DATABASE_URL`                | SQLAlchemy database URL (default local SQLite file)        |
-| `ANTHROPIC_API_KEY`           | API key for AI summarization                                |
-| `AI_MODEL`                    | Claude model name used for summarization                    |
-| `MAX_UPLOAD_SIZE_MB`          | Max allowed upload file size                                 |
-| `UPLOAD_DIR`                  | Directory where uploaded files are stored                   |
-| `FRONTEND_ORIGIN`             | Allowed CORS origin for the frontend dev/prod URL           |
+---
 
-## Features
+# 🔑 Environment Variables
 
-- **User Authentication** — register/login with Argon2-hashed passwords; sessions
-  managed via secure, HTTP-only JWT cookies.
-- **Medical Report Upload** — PDF, DOCX, TXT with server-side type & size validation
-  and a drag-and-drop UI with progress indicator.
-- **Document Processing** — text extraction from PDF (`pypdf`), DOCX (`python-docx`,
-  including tables), and TXT.
-- **AI-Powered Summarization** — extracted text sent to Claude for a concise,
-  patient-friendly summary that preserves key medical details.
-- **Summary Display** — original report and AI summary shown side by side.
-- **Report History** — list of past uploads with date, file name, and status.
-- **Search & Filter** — search by file name, sort by newest/oldest.
-- **Report Management** — delete reports, copy or download summaries.
-- **REST API** — standardized JSON success/error envelopes across all endpoints.
-- **Responsive UI** — Tailwind-based layout that adapts to desktop, tablet, mobile.
+| Variable | Description |
+|----------|-------------|
+| SECRET_KEY | JWT secret key |
+| DATABASE_URL | SQLite database URL |
+| ACCESS_TOKEN_EXPIRE_MINUTES | JWT expiration time |
+| ANTHROPIC_API_KEY | Anthropic API Key |
+| AI_MODEL | Claude model name |
+| FRONTEND_ORIGIN | Frontend URL |
 
-## Notes on Production Readiness
+---
 
-- Set `secure=True` on the auth cookie in `backend/app/routers/auth.py` once serving
-  over HTTPS.
-- Consider moving AI summarization to a background task/queue (e.g. Celery, RQ, or
-  FastAPI `BackgroundTasks`) for large files so uploads return immediately.
-- Swap SQLite for PostgreSQL for multi-instance deployments by changing
-  `DATABASE_URL`.
-- Add rate limiting on `/api/auth/*` endpoints in production.
+# 📄 Supported File Types
+
+- PDF
+- DOCX
+- TXT
+
+---
+
+# 🔒 Security
+
+- HTTP-only authentication cookies
+- JWT-based authentication
+- Argon2 password hashing
+- CORS protection
+- Server-side file validation
+- Upload size validation
+
+---
+
+# 📡 REST API
+
+### Authentication
+
+- POST `/auth/register`
+- POST `/auth/login`
+- POST `/auth/logout`
+- GET `/auth/me`
+
+### Reports
+
+- POST `/reports/upload`
+- GET `/reports`
+- GET `/reports/{id}`
+- DELETE `/reports/{id}`
+
+---
+
+# 📈 Future Improvements
+
+- PostgreSQL support
+- Background task processing
+- Email verification
+- Password reset
+- Report categorization
+- Download summaries as PDF
+- Multi-language summaries
+- Admin dashboard
+- Docker deployment
+- CI/CD pipeline
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push your branch
+5. Open a Pull Request
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+See the **LICENSE** file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Maalik Ashtar**
